@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -70,22 +71,16 @@ public class App extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     // Rebuild the table
-                    DefaultTableModel model = (DefaultTableModel) subjectsTable.getModel();
-                    model.setDataVector(Subject.buildTable(subjects), subjectColumns);
+                    DefaultTableModel model = (DefaultTableModel) studentsTable.getModel();
+                    model.setDataVector(Student.buildTable(students), studentColumns);
                 }
             };
-
 
             JFrame popup = new JFrame("Add Student");
             popup.getContentPane().add(new AddStudent(students, action).getContentPanel());
             popup.pack();
             popup.setLocationRelativeTo(null);
             popup.setVisible(true);
-
-
-
-
-            // TODO: Add event listener to the popup window
         });
         // Remove button
         buttonRemoveStudent.addActionListener(e -> {
@@ -254,7 +249,7 @@ public class App extends JFrame {
                 // Popup message
                 int option = JOptionPane.showOptionDialog(new JFrame(),
                         "Would you like to save your work?",
-                        "Close program",
+                        "Save before exit",
                         JOptionPane.YES_NO_CANCEL_OPTION,
                         JOptionPane.QUESTION_MESSAGE,
                         null,
@@ -320,7 +315,7 @@ public class App extends JFrame {
             public Class<?> getColumnClass(int columnIndex) {
                 Class c = switch (columnIndex) {
                     case 0 -> Integer.class;
-                    case 3 -> Date.class;
+                    case 3 -> LocalDate.class;
                     case 4 -> Boolean.class;
                     default -> String.class;
                 };
@@ -366,30 +361,10 @@ public class App extends JFrame {
                 return c;
             }
         };
-        TableCellRenderer tableCellRenderer = new DefaultTableCellRenderer() {
-
-            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
-
-            public Component getTableCellRendererComponent(JTable table,
-                                                           Object value,
-                                                           boolean isSelected,
-                                                           boolean hasFocus,
-                                                           int row,
-                                                           int column) {
-                if (value instanceof Date) {
-                    value = f.format(value);
-                }
-                return super.getTableCellRendererComponent(table, value, isSelected,
-                        hasFocus, row, column);
-            }
-        };
 
         // Initialize the JTables
         studentsTable = new JTable(modelStudents);
         subjectsTable = new JTable(modelSubjects);
-
-        // Apply custom date rendering format
-        studentsTable.getColumnModel().getColumn(3).setCellRenderer(tableCellRenderer);
 
         // Set the fonts for the JTables
         Font headerFont = new Font("Calibri", Font.BOLD, 16);

@@ -4,13 +4,11 @@ import lombok.Getter;
 import thorxs.Student;
 
 import javax.swing.*;
-import javax.swing.text.DateFormatter;
 import javax.swing.text.MaskFormatter;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 public class AddStudent extends JFrame {
@@ -24,36 +22,25 @@ public class AddStudent extends JFrame {
 
     public AddStudent(List<Student> students, ActionListener action) {
         buttonAddStudent.addActionListener(e -> {
-            String neptuneID = textFieldNeptuneID.getText();
+            String neptuneID = textFieldNeptuneID.getText().toUpperCase();
             String name = textFieldName.getText();
             String date = textFieldDate.getText();
             if (neptuneID.equals("") || name.equals("") || date.equals("")) {
-                // TODO: Warning message
+                JOptionPane.showMessageDialog(new JFrame(), "You must fill out every field!", "Missing data", JOptionPane.WARNING_MESSAGE);
                 return;
             }
+            // TODO: neptunID to upper case
 
-            Date dateOfBirth = null;
-
-            try {
-                dateOfBirth = new SimpleDateFormat("yyyy-MM-dd").parse(date);
-                System.out.println(dateOfBirth.toString());
-            } catch (ParseException parseException) {
-                parseException.printStackTrace();
-            }
-
-            if (dateOfBirth == null) {
-                // TODO: error message
-                System.out.println("error2");
-                return;
-            }
+            LocalDate dateOfBirth = LocalDate.parse(date);
 
             Student student = new Student(students.size() + 1, neptuneID, name, dateOfBirth);
             students.add(student);
             resetFields();
+            action.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
         });
 
         // Add action listener from the main window
-        buttonAddStudent.addActionListener(action);
+        //buttonAddStudent.addActionListener(action);
     }
 
     /**
@@ -66,14 +53,11 @@ public class AddStudent extends JFrame {
     }
 
     private void createUIComponents() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        DateFormatter dateFormatter = new DateFormatter(dateFormat);
         MaskFormatter mask = null;
         try {
             mask = new MaskFormatter("####-##-##");
         } catch (ParseException e) {
-            // TODO: Error handling
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(new JFrame(), "There was an error while creating the MaskFormatter!\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
 
         textFieldDate = new JFormattedTextField(mask);

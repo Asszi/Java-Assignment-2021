@@ -6,6 +6,7 @@ import lombok.Setter;
 import javax.swing.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,12 +21,12 @@ public class Student {
     @Getter @Setter
     private String name;
     @Getter
-    private Date dateOfBirth; // TODO: Add date of birth to JTable, data file, loading, saving and error checking
+    private LocalDate dateOfBirth; // TODO: Add date of birth to JTable, data file, loading, saving and error checking
 
     @Getter @Setter
     private List<Integer> courseList;
 
-    public Student(int ID, String neptuneID, String name, Date dateOfBirth) {
+    public Student(int ID, String neptuneID, String name, LocalDate dateOfBirth) {
         this.ID = ID;
         this.neptuneID = neptuneID;
         this.name = name;
@@ -58,23 +59,15 @@ public class Student {
                         shouldLoad = false;
                         break;
                     }
-
                 }
 
                 // Check if the data should load
                 if (shouldLoad) {
-                    try {
-                        students.add(new Student(
-                                Integer.parseInt(dataLine[0]),
-                                dataLine[1],
-                                dataLine[2],
-                                new SimpleDateFormat("yyyy-MM-dd").parse(dataLine[3])));
-                    } catch (ParseException e) {
-                        // TODO: Error message
-                        System.out.println(e.toString());
-                        errors.add(dataLine);
-                    }
-
+                    students.add(new Student(
+                            Integer.parseInt(dataLine[0]),
+                            dataLine[1],
+                            dataLine[2],
+                            LocalDate.parse(dataLine[3])));
                 } else {
                     errors.add(dataLine);
                 }
