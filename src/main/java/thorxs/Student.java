@@ -85,7 +85,6 @@ public class Student {
 
             for (String[] strings : sub) {
                 if (Integer.parseInt(strings[0]) == id) {
-                    System.out.println(strings[0] + ";" + strings[1]);
                     student.courseList.add(Integer.parseInt(strings[1]));
                 }
             }
@@ -127,6 +126,8 @@ public class Student {
         // TODO: Change this to the final file
         Utils.writeCSV("src/main/resources/takensubjects2.csv", data);
     }
+
+    // TODO: Add function to build the course table
 
     /**
      * Build an Object array to use for JTables
