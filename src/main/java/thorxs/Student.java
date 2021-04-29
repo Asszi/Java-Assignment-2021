@@ -4,11 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.swing.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Student {
-    public static final int STUDENT_COLUMNS = 3;
+    public static final int STUDENT_COLUMNS = 4;
 
     @Getter
     private final int ID;
@@ -16,14 +19,17 @@ public class Student {
     private final String neptuneID;
     @Getter @Setter
     private String name;
+    @Getter
+    private Date dateOfBirth; // TODO: Add date of birth to JTable, data file, loading, saving and error checking
 
     @Getter @Setter
     private List<Integer> courseList;
 
-    public Student(int ID, String neptuneID, String name) {
+    public Student(int ID, String neptuneID, String name, Date dateOfBirth) {
         this.ID = ID;
         this.neptuneID = neptuneID;
         this.name = name;
+        this.dateOfBirth = dateOfBirth;
         this.courseList = new ArrayList<>();
     }
 
@@ -32,7 +38,6 @@ public class Student {
      * @return Student list
      */
     public static List<Student> loadStudents() {
-        JFrame frame = new JFrame();
         List<String[]> data = Utils.readCSV("src/main/resources/students.csv");
         List<Student> students = new ArrayList<>();
 
@@ -53,14 +58,23 @@ public class Student {
                         shouldLoad = false;
                         break;
                     }
+
                 }
 
                 // Check if the data should load
                 if (shouldLoad) {
-                    students.add(new Student(
-                            Integer.parseInt(dataLine[0]),
-                            dataLine[1],
-                            dataLine[2]));
+                    try {
+                        students.add(new Student(
+                                Integer.parseInt(dataLine[0]),
+                                dataLine[1],
+                                dataLine[2],
+                                new SimpleDateFormat("yyyy-MM-dd").parse(dataLine[3])));
+                    } catch (ParseException e) {
+                        // TODO: Error message
+                        System.out.println(e.toString());
+                        errors.add(dataLine);
+                    }
+
                 } else {
                     errors.add(dataLine);
                 }
@@ -72,7 +86,7 @@ public class Student {
 
         // Display warning message and write incomplete rows to file
         if (errorFound) {
-            JOptionPane.showMessageDialog(frame, "Warning: Incomplete line(s) of student data found!\nIncomplete lines have been copied to the logs for review!", "Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(new JFrame(), "Warning: Incomplete line(s) of student data found!\nIncomplete lines have been copied to the logs for review!", "Warning", JOptionPane.WARNING_MESSAGE);
             Utils.writeCSV("src/main/resources/student-load.log", errors);
         }
 
@@ -104,7 +118,8 @@ public class Student {
             data.add(new String[] {
                 student.getID() + ";"
                 + student.getNeptuneID() + ";"
-                + student.getName()
+                + student.getName() + ";"
+                + student.getDateOfBirth()
             });
         }
 
@@ -141,7 +156,8 @@ public class Student {
             objectArray[i][0] = students.get(i).getID();
             objectArray[i][1] = students.get(i).getNeptuneID();
             objectArray[i][2] = students.get(i).getName();
-            objectArray[i][3] = false;
+            objectArray[i][3] = students.get(i).getDateOfBirth();
+            objectArray[i][4] = false;
         }
 
         return objectArray;

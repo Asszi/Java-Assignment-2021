@@ -17,8 +17,6 @@ public class Utils {
      * @param data Data to be written
      */
     public static void writeCSV(String fileName, List<String[]> data) {
-        JFrame frame = new JFrame();
-
         try {
             FileWriter writer = new FileWriter(fileName);
 
@@ -31,7 +29,7 @@ public class Utils {
             writer.flush();
             writer.close();
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(frame, "Error while writing file:\nMessage: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(new JFrame(), "Error while writing file:\nMessage: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -41,7 +39,6 @@ public class Utils {
      * @return A string list
      */
     public static List<String[]> readCSV(String fileName) {
-        JFrame frame = new JFrame();
         List<String[]> data = new ArrayList<>();
 
         // Check if the file exists
@@ -58,15 +55,15 @@ public class Utils {
 
                 br.close();
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(frame, "Error while reading file:\n" + fileName + "Message: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(new JFrame(), "Error while reading file:\n" + fileName + "Message: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
-            JOptionPane.showMessageDialog(frame, "Error: File not found!", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(new JFrame(), "Error: File not found!", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
         // Check if any data was read
         if (data.isEmpty()) {
-            JOptionPane.showMessageDialog(frame, "Warning: No data was read from file:\n" + fileName, "Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(new JFrame(), "Warning: No data was read from file:\n" + fileName, "Warning", JOptionPane.WARNING_MESSAGE);
         }
 
         return data;
