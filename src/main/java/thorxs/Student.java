@@ -113,13 +113,13 @@ public class Student {
      */
     public static void saveStudents(List<Student> students) {
         List<String[]> data = new ArrayList<>();
-
+        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
         for (Student student : students) {
             data.add(new String[] {
                 student.getID() + ";"
                 + student.getNeptuneID() + ";"
                 + student.getName() + ";"
-                + student.getDateOfBirth()
+                + f.format(student.getDateOfBirth())
             });
         }
 
