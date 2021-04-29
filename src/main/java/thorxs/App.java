@@ -7,6 +7,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -62,18 +63,29 @@ public class App extends JFrame {
          * Students
          */
 
-        // TODO: Add popup window to add student
         // Add button
         buttonAddStudent.addActionListener(e -> {
-            DefaultTableModel model = (DefaultTableModel) studentsTable.getModel();
+            // Action listener for button pressed on the popup window
+            ActionListener action = new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // Rebuild the table
+                    DefaultTableModel model = (DefaultTableModel) subjectsTable.getModel();
+                    model.setDataVector(Subject.buildTable(subjects), subjectColumns);
+                }
+            };
 
-            int nextID = 1;
 
-            if (model.getRowCount() != 0) {
-                nextID = Integer.parseInt(model.getValueAt(model.getRowCount() - 1, 0).toString()) + 1;
-            }
+            JFrame popup = new JFrame("Add Student");
+            popup.getContentPane().add(new AddStudent(students, action).getContentPanel());
+            popup.pack();
+            popup.setLocationRelativeTo(null);
+            popup.setVisible(true);
 
-            model.addRow(new Object[] { nextID, "", "", false});
+
+
+
+            // TODO: Add event listener to the popup window
         });
         // Remove button
         buttonRemoveStudent.addActionListener(e -> {
@@ -119,9 +131,7 @@ public class App extends JFrame {
                 }
 
                 if (foundBlankCell) {
-                    JFrame errorFrame = new JFrame();
-
-                    JOptionPane.showMessageDialog(errorFrame, "Cells can't be empty! Make sure to fill in all information!", "Empty cells", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(new JFrame(), "Cells can't be empty! Make sure to fill in all information!", "Empty cells", JOptionPane.WARNING_MESSAGE);
                 } else {
                     studentInEditMode = true;
                     buttonEditStudent.setText("EDIT");
@@ -135,12 +145,7 @@ public class App extends JFrame {
         });
         // Edit subjects button
         buttonEditStudentSubjects.addActionListener(e -> {
-            JFrame popup = new JFrame("Add Student");
-            popup.getContentPane().add(new AddStudent(students).getContentPanel());
-            popup.pack();
-            popup.setLocationRelativeTo(null);
-            popup.setVisible(true);
-            // TODO: Add event listener to the popup window
+
         });
 
         /*
