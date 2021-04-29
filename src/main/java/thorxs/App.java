@@ -6,6 +6,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Collections;
 import java.util.List;
 
@@ -106,6 +108,7 @@ public class App extends JFrame {
                     for (int j = 1; j < studentsTable.getColumnCount() - 2; j++) {
                         if (studentsTable.getValueAt(i, j).equals("")) {
                             foundBlankCell = true;
+                            // TODO: popup warning to fill every cell
                             System.out.println("FOUND BLANK");
                         }
                     }
@@ -133,7 +136,7 @@ public class App extends JFrame {
             popup.pack();
             popup.setLocationRelativeTo(null);
             popup.setVisible(true);
-            // TODO: Add pop-up window to edit the subjects
+            // TODO: Add event listener to the popup window
         });
 
         /*
@@ -225,16 +228,48 @@ public class App extends JFrame {
 
         // Initialize the frame
         frame.setContentPane(new App().mainTabbedPane);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.pack();
+
+        // Add custom event listener
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                // Button titles for the popup message
+                Object[] buttonTitles = {
+                        "Save",
+                        "Don't save",
+                        "Cancel"
+                };
+
+                // Popup message
+                int option = JOptionPane.showOptionDialog(new JFrame(),
+                        "Would you like to save your work?",
+                        "Close program",
+                        JOptionPane.YES_NO_CANCEL_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        buttonTitles,
+                        buttonTitles[2]);
+
+                // Save everything and close
+                if (option == 0) {
+                    Student.saveStudents(students);
+                    Subject.saveSubjects(subjects);
+
+                    frame.dispose();
+                    System.exit(0);
+                // Don't save and close
+                } else if (option == 1) {
+                    frame.dispose();
+                    System.exit(0);
+                }
+            }
+        });
 
         // Center the window on the main monitor and set it to visible
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-
-        // TODO: Add this before exit + save each time DONE is pressed
-        Student.saveStudents(students);
-        Subject.saveSubjects(subjects);
     }
 
     private void createUIComponents() {
