@@ -109,8 +109,23 @@ public class Student {
             });
         }
 
-        // TODO: Change this to the final file
+        // TODO: Implement developer switch to choose file to save to
         Utils.writeCSV("src/main/resources/students2.csv", data);
+
+        // Save the taken courses
+        data = new ArrayList<>();
+
+        for (Student student : students) {
+            for (int i = 0; i < student.getCourseList().size(); i++) {
+                data.add(new String[] {
+                        student.getID() + ";"
+                        + student.getCourseList().get(i)
+                });
+            }
+        }
+
+        // TODO: Change this to the final file
+        Utils.writeCSV("src/main/resources/takensubjects2.csv", data);
     }
 
     /**
