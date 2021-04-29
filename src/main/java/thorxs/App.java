@@ -70,9 +70,7 @@ public class App extends JFrame {
             ActionListener action = new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    // Rebuild the table
-                    DefaultTableModel model = (DefaultTableModel) studentsTable.getModel();
-                    model.setDataVector(Student.buildTable(students), studentColumns);
+                    rebuildStudentsTable();
                 }
             };
 
@@ -101,9 +99,7 @@ public class App extends JFrame {
             // Remove null objects from the list
             students.removeAll(Collections.singletonList(null));
 
-            // Rebuild the table
-            DefaultTableModel model = (DefaultTableModel) studentsTable.getModel();
-            model.setDataVector(Student.buildTable(students), studentColumns);
+            rebuildStudentsTable();
         });
         // Edit button
         buttonEditStudent.addActionListener(e -> {
@@ -175,9 +171,7 @@ public class App extends JFrame {
             // Remove null objects from the list
             subjects.removeAll(Collections.singletonList(null));
 
-            // Rebuild the table
-            DefaultTableModel model = (DefaultTableModel) subjectsTable.getModel();
-            model.setDataVector(Subject.buildTable(subjects), subjectColumns);
+            rebuildSubjectsTable();
         });
         // Edit button
         buttonEditSubject.addActionListener(e -> {
@@ -379,5 +373,21 @@ public class App extends JFrame {
 
         // Set the default chart to appear (Subject ratio in that case)
         paneStatistics.add(new Charts().subjectRatioChart(students, subjects));
+    }
+
+    /**
+     * Rebuilds the data vector for the Students table
+     */
+    private void rebuildStudentsTable() {
+        DefaultTableModel model = (DefaultTableModel) studentsTable.getModel();
+        model.setDataVector(Student.buildTable(students), studentColumns);
+    }
+
+    /**
+     * Rebuilds the data vector for the Subjects table
+     */
+    private void rebuildSubjectsTable() {
+        DefaultTableModel model = (DefaultTableModel) subjectsTable.getModel();
+        model.setDataVector(Subject.buildTable(subjects), subjectColumns);
     }
 }
