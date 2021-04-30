@@ -2,6 +2,7 @@ package thorxs;
 
 import thorxs.gui.AddStudent;
 import thorxs.gui.AddSubject;
+import thorxs.gui.EditSubjects;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -11,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,6 +37,8 @@ public class App extends JFrame {
     private JButton buttonEditStudentSubjects;
     private JButton buttonEditStudent;
     private JButton buttonEditSubject;
+    private JButton buttonStudentsSave;
+    private JButton buttonSubjectSave;
 
     private static final JFrame frame = new JFrame("Balazs Orehovszki - Assignment 2021 Java");
 
@@ -72,6 +76,7 @@ public class App extends JFrame {
             ActionListener action = e12 -> rebuildStudentsTable();
 
             JFrame popup = new JFrame("Add Student");
+            popup.setPreferredSize(new Dimension(300, 250));
             popup.getContentPane().add(new AddStudent(students, action).getContentPanel());
             popup.pack();
             popup.setLocationRelativeTo(null);
@@ -150,8 +155,57 @@ public class App extends JFrame {
         });
         // Edit subjects button
         buttonEditStudentSubjects.addActionListener(e -> {
-            // TODO: If in edit mode, prevent editing subjects for student
+            // TODO: While window open prevent edit
+            // Prevent action in edit mode
+            if (studentInEditMode) {
+                JOptionPane.showMessageDialog(new JFrame(), "Please, exit from edit mode before editing taken subjects!", "Exit edit mode", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // Check if any rows are selected for editing
+            List<Student> studentTempList = new ArrayList<>();
+
+            for (int i = 0; i < studentsTable.getRowCount(); i++) {
+                // Check for ticks
+                if ((boolean) studentsTable.getValueAt(i, studentsTable.getColumnCount() - 1)) {
+                    for (Student student : students) {
+                        // Check for student id
+                        if (student.getID() == (int) studentsTable.getValueAt(i, 0)) {
+                            studentTempList.add(student);
+                        }
+                    }
+                }
+            }
+
+            // If there are no students for editing
+            if (studentTempList.isEmpty()) {
+                return;
+            }
+
+            // TODO: Write new action listener
+            for (Student student : studentTempList) {
+                JDialog popup = new JDialog(frame, "Modify taken subjects");
+
+                // Action listener for button pressed on the popup window
+                ActionListener windowClosed = new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        popup.dispose();
+                    }
+                };
+
+                popup.setSize(350, 400);
+                popup.getContentPane().add(new EditSubjects(student, subjects, windowClosed).getContentPanel());
+                popup.pack();
+                popup.setLocationRelativeTo(null);
+                popup.setVisible(true);
+
+                // TODO: Wait for the dialog box to close
+                // TODO: Change all JFrames to JDialog
+            }
         });
+        // Save button
+        buttonStudentsSave.addActionListener(e -> Student.saveStudents(students));
 
         /*
          * Subjects
@@ -169,6 +223,7 @@ public class App extends JFrame {
             ActionListener action = e1 -> rebuildSubjectsTable();
 
             JFrame popup = new JFrame("Add Subject");
+            popup.setPreferredSize(new Dimension(300, 325));
             popup.getContentPane().add(new AddSubject(subjects, action).getContentPanel());
             popup.pack();
             popup.setLocationRelativeTo(null);
@@ -245,6 +300,8 @@ public class App extends JFrame {
                 }
             }
         });
+        // Save button
+        buttonSubjectSave.addActionListener(e -> Subject.saveSubjects(subjects));
 
         /*
          * Statistics

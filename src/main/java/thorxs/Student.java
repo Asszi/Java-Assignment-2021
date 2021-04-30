@@ -135,7 +135,29 @@ public class Student {
         Utils.writeCSV("src/main/resources/takensubjects2.csv", data);
     }
 
-    // TODO: Add function to build the course table
+
+    /**
+     * Build an object array to use for JTables
+     * @param student A Student object
+     * @param subjects Subject list
+     * @return Object array
+     */
+    public static Object[][] buildTakenCourseList(Student student, List<Subject> subjects) {
+        Object[][] objectArray = new Object[student.getCourseList().size()][4];
+
+        for (int i = 0; i < student.getCourseList().size(); i++) {
+            for (Subject subject : subjects) {
+                if (student.getCourseList().get(i) == subject.getID()) {
+                    objectArray[i][0] = subject.getID();
+                    objectArray[i][1] = subject.getSubjectCode();
+                    objectArray[i][2] = subject.getSubjectName();
+                    objectArray[i][3] = false;
+                }
+            }
+        }
+
+        return objectArray;
+    }
 
     /**
      * Build an Object array to use for JTables
