@@ -150,6 +150,20 @@ public class App extends JFrame {
                     for (int i = 0; i < studentsTable.getRowCount(); i++) {
                         studentsTable.setValueAt(false, i, studentsTable.getColumnCount() - 1);
                     }
+
+                    // Modify data
+                    List<Student> newList = new ArrayList<>();
+
+                    for (int i = 0; i < studentsTable.getRowCount(); i++) {
+                        newList.add(new Student(
+                                (int) studentsTable.getValueAt(i, 0),
+                                (String) studentsTable.getValueAt(i, 1),
+                                (String) studentsTable.getValueAt(i, 2),
+                                (LocalDate) studentsTable.getValueAt(i, 3)
+                        ));
+                    }
+
+                    students = newList;
                 }
             }
         });
@@ -297,6 +311,22 @@ public class App extends JFrame {
                     for (int i = 0; i < subjectsTable.getRowCount(); i++) {
                         subjectsTable.setValueAt(false, i, subjectsTable.getColumnCount() - 1);
                     }
+
+                    // Modify data
+                    List<Subject> newList = new ArrayList<>();
+
+                    for (int i = 0; i < subjectsTable.getRowCount(); i++) {
+                        newList.add(new Subject(
+                                (int) subjectsTable.getValueAt(i, 0),
+                                (String) subjectsTable.getValueAt(i, 1),
+                                (String) subjectsTable.getValueAt(i, 2),
+                                (int) subjectsTable.getValueAt(i, 3),
+                                (int) subjectsTable.getValueAt(i, 4),
+                                (int) subjectsTable.getValueAt(i, 5)
+                        ));
+                    }
+
+                    subjects = newList;
                 }
             }
         });
