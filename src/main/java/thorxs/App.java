@@ -1,6 +1,7 @@
 package thorxs;
 
 import thorxs.gui.AddStudent;
+import thorxs.gui.AddSubject;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -41,7 +42,6 @@ public class App extends JFrame {
     private static List<Student> students;
     private static List<Subject> subjects;
 
-    // TODO: Fix locking bug when tabs are switched in edit mode
     // Flag for edit mode
     private static boolean studentInEditMode;
     private static boolean subjectInEditMode;
@@ -62,13 +62,14 @@ public class App extends JFrame {
 
         // Add button
         buttonAddStudent.addActionListener(e -> {
+            // Prevent action in edit mode
+            if (studentInEditMode) {
+                JOptionPane.showMessageDialog(new JFrame(), "Please, exit from edit mode before adding a new student!", "Exit edit mode", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             // Action listener for button pressed on the popup window
-            ActionListener action = new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    rebuildStudentsTable();
-                }
-            };
+            ActionListener action = e12 -> rebuildStudentsTable();
 
             JFrame popup = new JFrame("Add Student");
             popup.getContentPane().add(new AddStudent(students, action).getContentPanel());
@@ -78,6 +79,12 @@ public class App extends JFrame {
         });
         // Remove button
         buttonRemoveStudent.addActionListener(e -> {
+            // Prevent action in edit mode
+            if (studentInEditMode) {
+                JOptionPane.showMessageDialog(new JFrame(), "Please, exit from edit mode before removing a student!", "Exit edit mode", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             // Remove the ticks
             for (int i = 0; i < studentsTable.getRowCount(); i++) {
                 if ((boolean) studentsTable.getValueAt(i, studentsTable.getColumnCount() - 1)) {
@@ -99,11 +106,24 @@ public class App extends JFrame {
         });
         // Edit button
         buttonEditStudent.addActionListener(e -> {
+            // Check if any rows are selected for editing
+            boolean validCall = false;
+
+            for (int i = 0; i < studentsTable.getRowCount(); i++) {
+                if ((boolean) studentsTable.getValueAt(i, studentsTable.getColumnCount() - 1)) {
+                    validCall = true;
+                }
+            }
+
+            if (!validCall) {
+                return;
+            }
+
             // Change button text according to edit mode
-            if (studentInEditMode) {
+            if (!studentInEditMode) {
+                studentInEditMode = true;
                 buttonEditStudent.setText("DONE");
             } else {
-
                 // Check for blank cells
                 boolean foundBlankCell = false;
 
@@ -111,8 +131,6 @@ public class App extends JFrame {
                     for (int j = 1; j < studentsTable.getColumnCount() - 2; j++) {
                         if (studentsTable.getValueAt(i, j).equals("")) {
                             foundBlankCell = true;
-                            // TODO: popup warning to fill every cell
-                            System.out.println("FOUND BLANK");
                         }
                     }
                 }
@@ -120,7 +138,7 @@ public class App extends JFrame {
                 if (foundBlankCell) {
                     JOptionPane.showMessageDialog(new JFrame(), "Cells can't be empty! Make sure to fill in all information!", "Empty cells", JOptionPane.WARNING_MESSAGE);
                 } else {
-                    studentInEditMode = true;
+                    studentInEditMode = false;
                     buttonEditStudent.setText("EDIT");
 
                     // Remove the ticks
@@ -132,24 +150,38 @@ public class App extends JFrame {
         });
         // Edit subjects button
         buttonEditStudentSubjects.addActionListener(e -> {
-
+            // TODO: If in edit mode, prevent editing subjects for student
         });
 
         /*
          * Subjects
          */
 
-        // TODO: Add popup window to add subject
         // Add button
         buttonAddSubject.addActionListener(e -> {
-            DefaultTableModel model = (DefaultTableModel) subjectsTable.getModel();
+            // Prevent action in edit mode
+            if (subjectInEditMode) {
+                JOptionPane.showMessageDialog(new JFrame(), "Please, exit from edit mode before adding a new subject!", "Exit edit mode", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
 
-            int nextID = Integer.parseInt(model.getValueAt(model.getRowCount() - 1, 0).toString()) + 1;
+            // Action listener for button pressed on the popup window
+            ActionListener action = e1 -> rebuildSubjectsTable();
 
-            model.addRow(new Object[] { nextID, "", "", "", "", "", false });
+            JFrame popup = new JFrame("Add Subject");
+            popup.getContentPane().add(new AddSubject(subjects, action).getContentPanel());
+            popup.pack();
+            popup.setLocationRelativeTo(null);
+            popup.setVisible(true);
         });
         // Remove button
         buttonRemoveSubject.addActionListener(e -> {
+            // Prevent action in edit mode
+            if (subjectInEditMode) {
+                JOptionPane.showMessageDialog(new JFrame(), "Please, exit from edit mode before removing a subject!", "Exit edit mode", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             // Remove the ticks
             for (int i = 0; i < subjectsTable.getRowCount(); i++) {
                 if ((boolean) subjectsTable.getValueAt(i, subjectsTable.getColumnCount() - 1)) {
@@ -171,17 +203,45 @@ public class App extends JFrame {
         });
         // Edit button
         buttonEditSubject.addActionListener(e -> {
-            subjectInEditMode = !subjectInEditMode;
+            // Check if any rows are selected for editing
+            boolean validCall = false;
+
+            for (int i = 0; i < subjectsTable.getRowCount(); i++) {
+                if ((boolean) subjectsTable.getValueAt(i, subjectsTable.getColumnCount() - 1)) {
+                    validCall = true;
+                }
+            }
+
+            if (!validCall) {
+                return;
+            }
 
             // Change button text according to edit mode
-            if (subjectInEditMode) {
+            if (!subjectInEditMode) {
+                subjectInEditMode = true;
                 buttonEditSubject.setText("DONE");
             } else {
-                buttonEditSubject.setText("EDIT");
+                // Check for blank cells
+                boolean foundBlankCell = false;
 
-                // Remove the ticks
                 for (int i = 0; i < subjectsTable.getRowCount(); i++) {
-                    subjectsTable.setValueAt(false, i, subjectsTable.getColumnCount() - 1);
+                    for (int j = 1; j < subjectsTable.getColumnCount() - 2; j++) {
+                        if (subjectsTable.getValueAt(i, j).equals("")) {
+                            foundBlankCell = true;
+                        }
+                    }
+                }
+
+                if (foundBlankCell) {
+                    JOptionPane.showMessageDialog(new JFrame(), "Cells can't be empty! Make sure to fill in all information!", "Empty cells", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    subjectInEditMode = false;
+                    buttonEditSubject.setText("EDIT");
+
+                    // Remove the ticks
+                    for (int i = 0; i < subjectsTable.getRowCount(); i++) {
+                        subjectsTable.setValueAt(false, i, subjectsTable.getColumnCount() - 1);
+                    }
                 }
             }
         });
@@ -206,7 +266,7 @@ public class App extends JFrame {
         });
         summaryButton.addActionListener(e -> {
             paneStatistics.removeAll();
-
+            // TODO: Add summary Panel
             frame.revalidate();
         });
     }
@@ -267,18 +327,14 @@ public class App extends JFrame {
     }
 
     private void createUIComponents() {
-        String[] columnsT3 = new String[] {
-                "ID", "Neptune ID", "Name"
-        };
-
         // Build the data arrays
-        Object[][] dataT1 = Student.buildTable(students);
-        Object[][] dataT2 = Subject.buildTable(subjects);
+        Object[][] dataStudentsTable = Student.buildTable(students);
+        Object[][] dataSubjectsTable = Subject.buildTable(subjects);
 
         /*
          * Create the table model for the students
          */
-        DefaultTableModel modelStudents = new DefaultTableModel(dataT1, studentColumns) {
+        DefaultTableModel modelStudents = new DefaultTableModel(dataStudentsTable, studentColumns) {
             @Override
             public void setDataVector(Object[][] dataVector, Object[] columnIdentifiers) {
                 super.setDataVector(dataVector, columnIdentifiers);
@@ -289,13 +345,12 @@ public class App extends JFrame {
                 if (column == 0) {
                     return false;
                 }
-                // Checkbox is disabled in edit mode
+                // Checkbox can be used if not in edit mode
                 if (!studentInEditMode && column == (this.getColumnCount() - 1)) {
-                    // If not in edit mode and it is the last column
                     return true;
                 }
-                if (studentInEditMode && (boolean) this.getValueAt(row, this.getColumnCount() - 1)) {
-                    // If in edit mode and the row is selected
+                // If in edit mode, column is not the last column and the row has a checkmark
+                if (studentInEditMode && (column != (this.getColumnCount() - 1)) && (boolean) this.getValueAt(row, this.getColumnCount() - 1)) {
                     return true;
                 }
                 return false;
@@ -305,7 +360,6 @@ public class App extends JFrame {
             public Class<?> getColumnClass(int columnIndex) {
                 return switch (columnIndex) {
                     case 0 -> Integer.class;
-                    case 3 -> LocalDate.class;
                     case 4 -> Boolean.class;
                     default -> String.class;
                 };
@@ -315,7 +369,7 @@ public class App extends JFrame {
         /*
          * Create the table model for the subjects
          */
-        DefaultTableModel modelSubjects = new DefaultTableModel(dataT2, subjectColumns) {
+        DefaultTableModel modelSubjects = new DefaultTableModel(dataSubjectsTable, subjectColumns) {
             @Override
             public void setDataVector(Object[][] dataVector, Object[] columnIdentifiers) {
                 super.setDataVector(dataVector, columnIdentifiers);
@@ -327,11 +381,11 @@ public class App extends JFrame {
                     return false;
                 }
                 // Checkbox is disabled in edit mode
-                if (!studentInEditMode && column == (this.getColumnCount() - 1)) {
+                if (!subjectInEditMode && column == (this.getColumnCount() - 1)) {
                     // If not in edit mode and it is the last column
                     return true;
                 }
-                if (subjectInEditMode && (boolean) this.getValueAt(row, this.getColumnCount() - 1)) {
+                if (subjectInEditMode && (column != (this.getColumnCount() - 1)) && (boolean) this.getValueAt(row, this.getColumnCount() - 1)) {
                     // If in edit mode and the row is selected
                     return true;
                 }
