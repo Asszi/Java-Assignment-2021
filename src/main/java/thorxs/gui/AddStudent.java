@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 public class AddStudent extends JFrame {
@@ -25,12 +26,19 @@ public class AddStudent extends JFrame {
             String neptuneID = textFieldNeptuneID.getText().toUpperCase();
             String name = textFieldName.getText();
             String date = textFieldDate.getText();
+
             if (neptuneID.equals("") || name.equals("") || date.equals("")) {
                 JOptionPane.showMessageDialog(new JFrame(), "You must fill out every field!", "Missing data", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-            LocalDate dateOfBirth = LocalDate.parse(date);
+            LocalDate dateOfBirth = null;
+            try {
+                dateOfBirth = LocalDate.parse(date);
+            } catch (DateTimeParseException ex) {
+                JOptionPane.showMessageDialog(new JFrame(), "Please provide a valid date!", "Invalid date", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
 
             Student student = new Student(students.size() + 1, neptuneID, name, dateOfBirth);
             students.add(student);
