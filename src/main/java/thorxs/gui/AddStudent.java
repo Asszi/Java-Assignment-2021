@@ -29,7 +29,6 @@ public class AddStudent extends JFrame {
                 JOptionPane.showMessageDialog(new JFrame(), "You must fill out every field!", "Missing data", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            // TODO: neptunID to upper case
 
             LocalDate dateOfBirth = LocalDate.parse(date);
 
@@ -38,9 +37,6 @@ public class AddStudent extends JFrame {
             resetFields();
             action.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
         });
-
-        // Add action listener from the main window
-        //buttonAddStudent.addActionListener(action);
     }
 
     /**
@@ -53,13 +49,17 @@ public class AddStudent extends JFrame {
     }
 
     private void createUIComponents() {
-        MaskFormatter mask = null;
+        MaskFormatter maskNeptune = null;
+        MaskFormatter maskDate = null;
+
         try {
-            mask = new MaskFormatter("####-##-##");
+            maskNeptune = new MaskFormatter("AAAAAA");
+            maskDate = new MaskFormatter("####-##-##");
         } catch (ParseException e) {
             JOptionPane.showMessageDialog(new JFrame(), "There was an error while creating the MaskFormatter!\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
 
-        textFieldDate = new JFormattedTextField(mask);
+        textFieldDate = new JFormattedTextField(maskDate);
+        textFieldNeptuneID = new JFormattedTextField(maskNeptune);
     }
 }
