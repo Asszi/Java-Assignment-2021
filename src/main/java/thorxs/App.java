@@ -68,14 +68,15 @@ public class App extends JFrame {
         buttonAddStudent.addActionListener(e -> {
             // Prevent action in edit mode
             if (studentInEditMode) {
-                JOptionPane.showMessageDialog(new JFrame(), "Please, exit from edit mode before adding a new student!", "Exit edit mode", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(new JDialog(), "Please, exit from edit mode before adding a new student!", "Exit edit mode", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
             // Action listener for button pressed on the popup window
             ActionListener action = e12 -> rebuildStudentsTable();
 
-            JFrame popup = new JFrame("Add Student");
+            JDialog popup = new JDialog();
+            popup.setTitle("Add Student");
             popup.setPreferredSize(new Dimension(300, 250));
             popup.getContentPane().add(new AddStudent(students, action).getContentPanel());
             popup.pack();
@@ -86,7 +87,7 @@ public class App extends JFrame {
         buttonRemoveStudent.addActionListener(e -> {
             // Prevent action in edit mode
             if (studentInEditMode) {
-                JOptionPane.showMessageDialog(new JFrame(), "Please, exit from edit mode before removing a student!", "Exit edit mode", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(new JDialog(), "Please, exit from edit mode before removing a student!", "Exit edit mode", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
@@ -141,7 +142,7 @@ public class App extends JFrame {
                 }
 
                 if (foundBlankCell) {
-                    JOptionPane.showMessageDialog(new JFrame(), "Cells can't be empty! Make sure to fill in all information!", "Empty cells", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(new JDialog(), "Cells can't be empty! Make sure to fill in all information!", "Empty cells", JOptionPane.WARNING_MESSAGE);
                 } else {
                     studentInEditMode = false;
                     buttonEditStudent.setText("EDIT");
@@ -172,7 +173,7 @@ public class App extends JFrame {
             // TODO: While window open prevent edit
             // Prevent action in edit mode
             if (studentInEditMode) {
-                JOptionPane.showMessageDialog(new JFrame(), "Please, exit from edit mode before editing taken subjects!", "Exit edit mode", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(new JDialog(), "Please, exit from edit mode before editing taken subjects!", "Exit edit mode", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
@@ -196,9 +197,9 @@ public class App extends JFrame {
                 return;
             }
 
-            // TODO: Write new action listener
             for (Student student : studentTempList) {
-                JDialog popup = new JDialog(frame, "Modify taken subjects");
+                JDialog popup = new JDialog();
+                popup.setTitle("Modify taken subjects");
 
                 // Action listener for button pressed on the popup window
                 ActionListener windowClosed = new ActionListener() {
@@ -214,8 +215,7 @@ public class App extends JFrame {
                 popup.setLocationRelativeTo(null);
                 popup.setVisible(true);
 
-                // TODO: Wait for the dialog box to close
-                // TODO: Change all JFrames to JDialog
+                // TODO: Wait for the dialog box to close?
             }
         });
         // Save button
@@ -224,19 +224,19 @@ public class App extends JFrame {
         /*
          * Subjects
          */
-
         // Add button
         buttonAddSubject.addActionListener(e -> {
             // Prevent action in edit mode
             if (subjectInEditMode) {
-                JOptionPane.showMessageDialog(new JFrame(), "Please, exit from edit mode before adding a new subject!", "Exit edit mode", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(new JDialog(), "Please, exit from edit mode before adding a new subject!", "Exit edit mode", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
             // Action listener for button pressed on the popup window
             ActionListener action = e1 -> rebuildSubjectsTable();
 
-            JFrame popup = new JFrame("Add Subject");
+            JDialog popup = new JDialog();
+            popup.setTitle("Add Subject");
             popup.setPreferredSize(new Dimension(300, 325));
             popup.getContentPane().add(new AddSubject(subjects, action).getContentPanel());
             popup.pack();
@@ -247,7 +247,7 @@ public class App extends JFrame {
         buttonRemoveSubject.addActionListener(e -> {
             // Prevent action in edit mode
             if (subjectInEditMode) {
-                JOptionPane.showMessageDialog(new JFrame(), "Please, exit from edit mode before removing a subject!", "Exit edit mode", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(new JDialog(), "Please, exit from edit mode before removing a subject!", "Exit edit mode", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
@@ -302,7 +302,7 @@ public class App extends JFrame {
                 }
 
                 if (foundBlankCell) {
-                    JOptionPane.showMessageDialog(new JFrame(), "Cells can't be empty! Make sure to fill in all information!", "Empty cells", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(new JDialog(), "Cells can't be empty! Make sure to fill in all information!", "Empty cells", JOptionPane.WARNING_MESSAGE);
                 } else {
                     subjectInEditMode = false;
                     buttonEditSubject.setText("EDIT");
@@ -359,6 +359,7 @@ public class App extends JFrame {
     }
 
     public static void main(String[] args) {
+        Configuration.loadConfiguration();
         // Set the default values for the flags
         studentInEditMode = false;
         subjectInEditMode = false;
@@ -384,7 +385,7 @@ public class App extends JFrame {
                 };
 
                 // Popup message
-                int option = JOptionPane.showOptionDialog(new JFrame(),
+                int option = JOptionPane.showOptionDialog(new JDialog(),
                         "Would you like to save your work?",
                         "Save before exit",
                         JOptionPane.YES_NO_CANCEL_OPTION,
@@ -437,10 +438,7 @@ public class App extends JFrame {
                     return true;
                 }
                 // If in edit mode, column is not the last column and the row has a checkmark
-                if (studentInEditMode && (column != (this.getColumnCount() - 1)) && (boolean) this.getValueAt(row, this.getColumnCount() - 1)) {
-                    return true;
-                }
-                return false;
+                return studentInEditMode && (column != (this.getColumnCount() - 1)) && (boolean) this.getValueAt(row, this.getColumnCount() - 1);
             }
 
             @Override
@@ -472,11 +470,8 @@ public class App extends JFrame {
                     // If not in edit mode and it is the last column
                     return true;
                 }
-                if (subjectInEditMode && (column != (this.getColumnCount() - 1)) && (boolean) this.getValueAt(row, this.getColumnCount() - 1)) {
-                    // If in edit mode and the row is selected
-                    return true;
-                }
-                return false;
+                // If in edit mode and the row is selected
+                return subjectInEditMode && (column != (this.getColumnCount() - 1)) && (boolean) this.getValueAt(row, this.getColumnCount() - 1);
             }
 
             @Override

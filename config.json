@@ -1,0 +1,6 @@
+{
+  "developerMode":true,
+  "studentsPath":"data/students.csv",
+  "takenSubjectsPath":"data/takensubjects.csv",
+  "subjectsPath":"data/subjects.csv"
+}
