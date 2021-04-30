@@ -15,8 +15,6 @@ public class Charts {
      * @return The chart object
      */
     public JPanel subjectRatioChart(List<Student> students, List<Subject> subjects) {
-        JFrame frame = new JFrame();
-
         List<String> names = new ArrayList<>();
         List<Integer> ids = new ArrayList<>();
         List<Integer> values = new ArrayList<>();
@@ -65,8 +63,6 @@ public class Charts {
      * @return The chart object
      */
     public JPanel subjectStudentChart(List<Student> students) {
-        JFrame frame = new JFrame();
-
         List<String> neptuneID = new ArrayList<>();
         List<Number> values = new ArrayList<>();
 
@@ -98,8 +94,6 @@ public class Charts {
      * @return The chart object
      */
     public JPanel creditStudentChart(List<Student> students, List<Subject> subjects) {
-        JFrame frame = new JFrame();
-
         List<String> neptuneID = new ArrayList<>();
         List<Integer> credits = new ArrayList<>();
         List<Integer> ids = new ArrayList<>();

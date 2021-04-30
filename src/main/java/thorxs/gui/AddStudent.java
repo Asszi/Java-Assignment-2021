@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
-public class AddStudent extends JFrame {
+public class AddStudent {
     private JTextField textFieldNeptuneID;
     private JTextField textFieldName;
     private JButton buttonAddStudent;
@@ -28,7 +28,7 @@ public class AddStudent extends JFrame {
             String date = textFieldDate.getText();
 
             if (neptuneID.equals("") || name.equals("") || date.equals("")) {
-                JOptionPane.showMessageDialog(new JFrame(), "You must fill out every field!", "Missing data", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(new JDialog(), "You must fill out every field!", "Missing data", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
@@ -36,7 +36,7 @@ public class AddStudent extends JFrame {
             try {
                 dateOfBirth = LocalDate.parse(date);
             } catch (DateTimeParseException ex) {
-                JOptionPane.showMessageDialog(new JFrame(), "Please provide a valid date!", "Invalid date", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(new JDialog(), "Please provide a valid date!", "Invalid date", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
@@ -64,7 +64,7 @@ public class AddStudent extends JFrame {
             maskNeptune = new MaskFormatter("AAAAAA");
             maskDate = new MaskFormatter("####-##-##");
         } catch (ParseException e) {
-            JOptionPane.showMessageDialog(new JFrame(), "There was an error while creating the MaskFormatter!\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(new JDialog(), "There was an error while creating the MaskFormatter!\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
 
         textFieldDate = new JFormattedTextField(maskDate);

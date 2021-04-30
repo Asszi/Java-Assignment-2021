@@ -29,7 +29,7 @@ public class AddSubject {
             String credit = formattedTextFieldCredit.getText();
 
             if (subjectID.equals("") || subjectName.equals("") || seminars.equals("") || lectures.equals("") || credit.equals("")) {
-                JOptionPane.showMessageDialog(new JFrame(), "You must fill out every field!", "Missing data", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(new JDialog(), "You must fill out every field!", "Missing data", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
@@ -57,7 +57,7 @@ public class AddSubject {
         try {
             limit = new MaskFormatter("#");
         } catch (ParseException e) {
-            JOptionPane.showMessageDialog(new JFrame(), "There was an error while creating the MaskFormatter!\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(new JDialog(), "There was an error while creating the MaskFormatter!\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
 
         formattedTextFieldSeminars = new JFormattedTextField(limit);

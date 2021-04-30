@@ -35,7 +35,6 @@ public class EditSubjects {
         studentNeptuneID.setText("Neptune ID: " + student.getNeptuneID());
         studentName.setText("Name: " + student.getName());
 
-        // TODO: Test
         doneButton.addActionListener(e -> {
             List<Integer> newList = new ArrayList<>();
             for (int i = 0; i < tableEditSubjects.getRowCount(); i++) {
@@ -65,10 +64,7 @@ public class EditSubjects {
 
             public boolean isCellEditable(int row, int column){
                 // ID cannot be manually edited
-                if (column == (this.getColumnCount() - 1)) {
-                    return true;
-                }
-                return false;
+                return column == (this.getColumnCount() - 1);
             }
 
             @Override
