@@ -3,18 +3,14 @@ package thorxs;
 import thorxs.gui.AddStudent;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 public class App extends JFrame {
@@ -307,14 +303,12 @@ public class App extends JFrame {
 
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                Class c = switch (columnIndex) {
+                return switch (columnIndex) {
                     case 0 -> Integer.class;
                     case 3 -> LocalDate.class;
                     case 4 -> Boolean.class;
                     default -> String.class;
                 };
-
-                return c;
             }
         };
 
@@ -346,13 +340,11 @@ public class App extends JFrame {
 
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                Class c = switch (columnIndex) {
+                return switch (columnIndex) {
                     case 0, 3, 4, 5 -> Integer.class;
                     case 6 -> Boolean.class;
                     default -> String.class;
                 };
-
-                return c;
             }
         };
 
