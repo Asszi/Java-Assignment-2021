@@ -4,11 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.swing.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class Student {
@@ -21,7 +20,7 @@ public class Student {
     @Getter @Setter
     private String name;
     @Getter
-    private LocalDate dateOfBirth; // TODO: Add date of birth to JTable, data file, loading, saving and error checking
+    private final LocalDate dateOfBirth;
 
     @Getter @Setter
     private List<Integer> courseList;
@@ -39,7 +38,7 @@ public class Student {
      * @return Student list
      */
     public static List<Student> loadStudents() {
-        List<String[]> data = Utils.readCSV("src/main/resources/students.csv");
+        List<String[]> data = Utils.readCSV(Configuration.getStudentsPath());
         List<Student> students = new ArrayList<>();
 
         List<String[]> errors = new ArrayList<>();
@@ -79,13 +78,12 @@ public class Student {
 
         // Display warning message and write incomplete rows to file
         if (errorFound) {
-            JOptionPane.showMessageDialog(new JFrame(), "Warning: Incomplete line(s) of student data found!\nIncomplete lines have been copied to the logs for review!", "Warning", JOptionPane.WARNING_MESSAGE);
-            Utils.writeCSV("src/main/resources/student-load.log", errors);
+            JOptionPane.showMessageDialog(new JDialog(), "Warning: Incomplete line(s) of student data found!\nIncomplete lines have been copied to the logs for review!", "Warning", JOptionPane.WARNING_MESSAGE);
+            Utils.writeCSV("./data/student-incomplete.log", errors);
         }
 
-        List<String[]> sub = Utils.readCSV("src/main/resources/takensubjects.csv");
+        List<String[]> sub = Utils.readCSV(Configuration.getTakenSubjectsPath());
 
-        // TODO: Error checking
         // Load the taken courses
         for (Student student : students) {
             int id = student.getID();
@@ -116,8 +114,11 @@ public class Student {
             });
         }
 
-        // TODO: Implement developer switch to choose file to save to
-        Utils.writeCSV("src/main/resources/students2.csv", data);
+        if (Configuration.isDeveloperMode()) {
+            Utils.writeCSV("./data/dev-students.csv", data);
+        } else {
+            Utils.writeCSV(Configuration.getStudentsPath(), data);
+        }
 
         // Save the taken courses
         data = new ArrayList<>();
@@ -131,8 +132,11 @@ public class Student {
             }
         }
 
-        // TODO: Change this to the final file
-        Utils.writeCSV("src/main/resources/takensubjects2.csv", data);
+        if (Configuration.isDeveloperMode()) {
+            Utils.writeCSV("./data/dev-takensubjects.csv", data);
+        } else {
+            Utils.writeCSV(Configuration.getTakenSubjectsPath(), data);
+        }
     }
 
 

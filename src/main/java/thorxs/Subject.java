@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.swing.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,8 +39,7 @@ public class Subject {
      * @return Subject list
      */
     public static List<Subject> loadSubjects() {
-        JFrame frame = new JFrame();
-        List<String[]> data = Utils.readCSV("src/main/resources/subjects.csv");
+        List<String[]> data = Utils.readCSV(Configuration.getSubjectsPath());
         List<Subject> subjects = new ArrayList<>();
 
         List<String[]> errors = new ArrayList<>();
@@ -80,8 +81,8 @@ public class Subject {
 
         // Display warning message and write incomplete rows to file
         if (errorFound) {
-            JOptionPane.showMessageDialog(frame, "Warning: Incomplete line(s) of subject data found!\nIncomplete lines have been copied to the logs for review!", "Warning", JOptionPane.WARNING_MESSAGE);
-            Utils.writeCSV("src/main/resources/subject-load.log", errors);
+            JOptionPane.showMessageDialog(new JDialog(), "Warning: Incomplete line(s) of subject data found!\nIncomplete lines have been copied to the logs for review!", "Warning", JOptionPane.WARNING_MESSAGE);
+            Utils.writeCSV("./data/subject-incomplete.log", errors);
         }
 
         return subjects;
@@ -105,8 +106,11 @@ public class Subject {
             });
         }
 
-        // TODO: Change this to the final file
-        Utils.writeCSV("src/main/resources/subjects2.csv", data);
+        if (Configuration.isDeveloperMode()) {
+            Utils.writeCSV("./data/dev-subjects.csv", data);
+        } else {
+            Utils.writeCSV(Configuration.getSubjectsPath(), data);
+        }
     }
 
     /**
