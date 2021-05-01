@@ -4,6 +4,7 @@ import org.knowm.xchart.*;
 import org.knowm.xchart.style.Styler;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 

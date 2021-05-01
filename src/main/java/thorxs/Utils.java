@@ -37,8 +37,15 @@ public class Utils {
     public static List<String[]> readCSV(String fileName) {
         List<String[]> data = new ArrayList<>();
 
+        // Check if the directory exists
+        File file = new File("./data");
+
+        if (!file.isDirectory()) {
+            boolean success = file.mkdir();
+        }
+
         // Check if the file exists
-        File file = new File(fileName);
+        file = new File(fileName);
         if (file.isFile() && file.exists()) {
             try {
                 BufferedReader br = new BufferedReader(new FileReader(fileName));
@@ -58,7 +65,7 @@ public class Utils {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(new JDialog(), "Error: File: " + fileName + "could not be created!", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(new JDialog(), "Error: File: " + fileName + " could not be created!", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
 

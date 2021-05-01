@@ -3,6 +3,7 @@ package thorxs;
 import thorxs.gui.AddStudent;
 import thorxs.gui.AddSubject;
 import thorxs.gui.EditSubjects;
+import thorxs.gui.SummaryPage;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -353,7 +354,8 @@ public class App extends JFrame {
         });
         summaryButton.addActionListener(e -> {
             paneStatistics.removeAll();
-            // TODO: Add summary Panel
+            paneStatistics.add(new SummaryPage(students, subjects).getContentPanel());
+            frame.repaint();
             frame.revalidate();
         });
     }
