@@ -41,7 +41,7 @@ public class App extends JFrame {
     private JButton buttonStudentsSave;
     private JButton buttonSubjectSave;
 
-    private static final JFrame frame = new JFrame("Balazs Orehovszki - Assignment 2021 Java");
+    private static final JFrame frame = new JFrame();
 
     // Object arrays
     private static List<Student> students;
@@ -50,6 +50,9 @@ public class App extends JFrame {
     // Flag for edit mode
     private static boolean studentInEditMode;
     private static boolean subjectInEditMode;
+
+    // The charts
+    private Charts charts;
 
     private static final String[] studentColumns
             = new String[] {
@@ -339,17 +342,26 @@ public class App extends JFrame {
          */
         subjectRatioButton.addActionListener(e -> {
             paneStatistics.removeAll();
-            paneStatistics.add(new Charts().subjectRatioChart(students, subjects));
+
+            charts.subjectRatioChart();
+            paneStatistics.add(charts.getCurrentChart());
+
             frame.revalidate();
         });
         subjectStudentButton.addActionListener(e -> {
             paneStatistics.removeAll();
-            paneStatistics.add(new Charts().subjectStudentChart(students));
+
+            charts.subjectStudentChart();
+            paneStatistics.add(charts.getCurrentChart());
+
             frame.revalidate();
         });
         creditStudentButton.addActionListener(e -> {
             paneStatistics.removeAll();
-            paneStatistics.add(new Charts().creditStudentChart(students, subjects));
+
+            charts.creditStudentChart();
+            paneStatistics.add(charts.getCurrentChart());
+
             frame.revalidate();
         });
         summaryButton.addActionListener(e -> {
@@ -361,6 +373,7 @@ public class App extends JFrame {
     }
 
     public static void main(String[] args) {
+        frame.setTitle("Balazs Orehovszki - Assignment 2021 Java");
         Configuration.loadConfiguration();
         // Set the default values for the flags
         studentInEditMode = false;
@@ -502,7 +515,9 @@ public class App extends JFrame {
         paneStatistics = new JPanel();
 
         // Set the default chart to appear (Subject ratio in that case)
-        paneStatistics.add(new Charts().subjectRatioChart(students, subjects));
+        charts = new Charts(students, subjects, paneStatistics);
+        new Thread(charts).start();
+        paneStatistics.add(charts.getCurrentChart());
     }
 
     /**
